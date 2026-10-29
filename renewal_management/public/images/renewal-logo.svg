@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <rect width="128" height="128" rx="28" fill="#0F766E"/>
+  <!-- calendar -->
+  <rect x="26" y="32" width="76" height="66" rx="10" fill="#ffffff"/>
+  <rect x="26" y="32" width="76" height="18" rx="9" fill="#99F6E4"/>
+  <path d="M44 24v16M84 24v16" stroke="#ffffff" stroke-width="7" stroke-linecap="round"/>
+  <!-- renew arrows -->
+  <path d="M50 74a14 14 0 0 1 24-10" fill="none" stroke="#0F766E" stroke-width="6" stroke-linecap="round"/>
+  <path d="M76 56v10h-10" fill="none" stroke="#0F766E" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M78 74a14 14 0 0 1-24 10" fill="none" stroke="#F59E0B" stroke-width="6" stroke-linecap="round"/>
+  <path d="M52 92V82h10" fill="none" stroke="#F59E0B" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

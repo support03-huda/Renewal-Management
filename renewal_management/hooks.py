@@ -5,6 +5,37 @@ app_description = "reminders for renew"
 app_email = "support03@softworld.co.in"
 app_license = "mit"
 
+# Renewal reminders for Domain / Antivirus / Microsoft 365 / Google Workspace etc.
+
+before_migrate = ["renewal_management.install.create_roles"]
+after_install = "renewal_management.install.after_install"
+after_migrate = ["renewal_management.install.setup_defaults"]
+
+scheduler_events = {
+	"cron": {
+		# Every morning at 09:00: renewal, hard call, bill date and payment clearance reminders.
+		"0 9 * * *": ["renewal_management.reminders.daily"],
+	},
+}
+
+app_logo_url = "/assets/renewal_management/images/renewal-logo.svg"
+app_home = "/desk/renewal-management"
+app_color = "#0F766E"
+
+# App icon on the Desk.
+add_to_apps_screen = [
+	{
+		"name": "renewal_management",
+		"logo": app_logo_url,
+		"title": "Renewal Management",
+		"route": app_home,
+		"has_permission": "renewal_management.install.has_app_permission",
+	}
+]
+
+# Desk users land on the Renewal Management workspace after login.
+get_website_user_home_page = "renewal_management.install.get_home_page"
+
 # Apps
 # ------------------
 

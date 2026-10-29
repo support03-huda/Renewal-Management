@@ -1,0 +1,416 @@
+{
+ "actions": [],
+ "creation": "2026-10-29 10:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "sec_customer",
+  "customer",
+  "customer_email",
+  "mobile",
+  "cb1",
+  "product_type",
+  "product_name",
+  "quantity",
+  "amount",
+  "sec_dates",
+  "billing_cycle",
+  "start_date",
+  "expiry_date",
+  "cb2",
+  "bill_date",
+  "days_left",
+  "status",
+  "sec_remind",
+  "remind_before_days",
+  "follow_up_every",
+  "cb3",
+  "hard_call_before_days",
+  "assigned_to",
+  "cb4",
+  "reminder_start_date",
+  "hard_call_date",
+  "last_reminder_on",
+  "next_reminder_on",
+  "hard_call_todo",
+  "bill_reminder_sent",
+  "action_key",
+  "sec_outcome",
+  "renewed_on",
+  "next_renewal",
+  "previous_renewal",
+  "lost_reason",
+  "cb5",
+  "payment_status",
+  "clearance_every_days",
+  "next_clearance_on",
+  "payment_cleared_on",
+  "sec_log",
+  "reminder_log",
+  "sec_notes",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "sec_customer",
+   "fieldtype": "Section Break",
+   "label": "Customer & Product"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Renewal Customer",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "customer_email",
+   "fieldtype": "Data",
+   "label": "Customer Email",
+   "options": "Email",
+   "fetch_from": "customer.email",
+   "fetch_if_empty": 1,
+   "description": "Contact info only. Reminders go to you, never to the customer."
+  },
+  {
+   "fieldname": "mobile",
+   "fieldtype": "Data",
+   "label": "Mobile",
+   "options": "Phone",
+   "fetch_from": "customer.mobile",
+   "fetch_if_empty": 1
+  },
+  {
+   "fieldname": "cb1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "product_type",
+   "fieldtype": "Link",
+   "label": "Product Type",
+   "options": "Renewal Product Type",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "product_name",
+   "fieldtype": "Data",
+   "label": "Product Name",
+   "in_list_view": 1,
+   "description": "Filled from Product Type. Change it if needed, e.g. softworld.co.in"
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Int",
+   "label": "Quantity",
+   "default": "1",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount"
+  },
+  {
+   "fieldname": "sec_dates",
+   "fieldtype": "Section Break",
+   "label": "Dates"
+  },
+  {
+   "fieldname": "billing_cycle",
+   "fieldtype": "Select",
+   "label": "Billing Cycle",
+   "options": "Monthly\nQuarterly\nHalf-Yearly\nAnnually\nCustom",
+   "default": "Annually",
+   "reqd": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Renewal Date",
+   "default": "Today",
+   "description": "Expiry is set from this date and the billing cycle"
+  },
+  {
+   "fieldname": "expiry_date",
+   "fieldtype": "Date",
+   "label": "Expiry Date",
+   "in_list_view": 1,
+   "description": "Auto: Renewal Date + billing cycle. Enter it yourself for Custom."
+  },
+  {
+   "fieldname": "cb2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "bill_date",
+   "fieldtype": "Date",
+   "label": "Bill Date",
+   "description": "An internal reminder is sent on this date to raise the bill"
+  },
+  {
+   "fieldname": "days_left",
+   "fieldtype": "Int",
+   "label": "Days Left",
+   "read_only": 1,
+   "in_list_view": 1,
+   "description": "Days until expiry. Negative = expired. Updated every morning."
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Active\nDue\nExpired\nRenewed\nLost",
+   "default": "Active",
+   "read_only": 1,
+   "in_standard_filter": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "sec_remind",
+   "fieldtype": "Section Break",
+   "label": "Reminders"
+  },
+  {
+   "fieldname": "remind_before_days",
+   "fieldtype": "Int",
+   "label": "Remind Before (Days)",
+   "default": "30",
+   "non_negative": 1,
+   "description": "First reminder this many days before expiry"
+  },
+  {
+   "fieldname": "follow_up_every",
+   "fieldtype": "Select",
+   "label": "Then Follow Up",
+   "options": "Every Day\nEvery Week\nEvery Month",
+   "default": "Every Week",
+   "description": "Repeats until the renewal is marked Renewed or Lost"
+  },
+  {
+   "fieldname": "cb3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "hard_call_before_days",
+   "fieldtype": "Int",
+   "label": "Hard Call Before (Days)",
+   "default": "7",
+   "non_negative": 1,
+   "description": "A ToDo to phone the customer is created this many days before expiry"
+  },
+  {
+   "fieldname": "assigned_to",
+   "fieldtype": "Link",
+   "label": "Assigned To",
+   "options": "User",
+   "description": "Gets the hard call ToDo and every reminder email"
+  },
+  {
+   "fieldname": "cb4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "reminder_start_date",
+   "fieldtype": "Date",
+   "label": "First Reminder On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hard_call_date",
+   "fieldtype": "Date",
+   "label": "Hard Call On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_reminder_on",
+   "fieldtype": "Date",
+   "label": "Last Reminder On",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "next_reminder_on",
+   "fieldtype": "Date",
+   "label": "Next Reminder On",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "hard_call_todo",
+   "fieldtype": "Link",
+   "label": "Hard Call ToDo",
+   "options": "ToDo",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "bill_reminder_sent",
+   "fieldtype": "Check",
+   "label": "Bill Reminder Sent",
+   "read_only": 1,
+   "no_copy": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "action_key",
+   "fieldtype": "Data",
+   "label": "Email Action Key",
+   "read_only": 1,
+   "no_copy": 1,
+   "hidden": 1,
+   "description": "Secret in the email links that close this record"
+  },
+  {
+   "fieldname": "sec_outcome",
+   "fieldtype": "Section Break",
+   "label": "Renewal Outcome",
+   "depends_on": "eval:['Renewed','Lost'].includes(doc.status) || doc.previous_renewal"
+  },
+  {
+   "fieldname": "renewed_on",
+   "fieldtype": "Date",
+   "label": "Renewed On",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "next_renewal",
+   "fieldtype": "Link",
+   "label": "Next Period Record",
+   "options": "Renewal",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "previous_renewal",
+   "fieldtype": "Link",
+   "label": "Previous Period Record",
+   "options": "Renewal",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "lost_reason",
+   "fieldtype": "Small Text",
+   "label": "Lost Reason",
+   "read_only": 1,
+   "no_copy": 1,
+   "depends_on": "eval:doc.status=='Lost'"
+  },
+  {
+   "fieldname": "cb5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "payment_status",
+   "fieldtype": "Select",
+   "label": "Payment",
+   "options": "\nPending\nCleared",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "clearance_every_days",
+   "fieldtype": "Int",
+   "label": "Clearance Reminder Every (Days)",
+   "default": "3",
+   "non_negative": 1,
+   "description": "After renewal, you are reminded every few days until payment is cleared"
+  },
+  {
+   "fieldname": "next_clearance_on",
+   "fieldtype": "Date",
+   "label": "Next Clearance Reminder",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "payment_cleared_on",
+   "fieldtype": "Date",
+   "label": "Payment Cleared On",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "sec_log",
+   "fieldtype": "Section Break",
+   "label": "Reminder Log",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "reminder_log",
+   "fieldtype": "Table",
+   "label": "Reminder Log",
+   "options": "Renewal Reminder Log",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "sec_notes",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-10-29 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Renewal Management",
+ "name": "Renewal",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "report": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
+  },
+  {
+   "role": "Renewal Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "report": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
+  },
+  {
+   "role": "Renewal User",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "report": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1
+  }
+ ],
+ "sort_field": "expiry_date",
+ "sort_order": "ASC",
+ "states": [],
+ "autoname": "RNW-.YYYY.-.#####",
+ "naming_rule": "Expression (old style)",
+ "title_field": "product_name",
+ "show_title_field_in_link": 1,
+ "search_fields": "customer,product_name,product_type,expiry_date",
+ "track_changes": 1
+}

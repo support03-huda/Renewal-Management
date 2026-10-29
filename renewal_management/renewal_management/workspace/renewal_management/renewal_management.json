@@ -1,0 +1,95 @@
+{
+ "app": "renewal_management",
+ "charts": [],
+ "content": "[{\"id\": \"rm00000001\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Renewal Management</b></span>\", \"col\": 12}}, {\"id\": \"rm00000002\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Renewals Due\", \"col\": 3}}, {\"id\": \"rm00000003\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Renewals Expired\", \"col\": 3}}, {\"id\": \"rm00000004\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Payment Pending\", \"col\": 3}}, {\"id\": \"rm00000005\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Active Renewals\", \"col\": 3}}, {\"id\": \"rm00000006\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h5\\\"><b>Go To</b></span>\", \"col\": 12}}, {\"id\": \"rm00000007\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Renewals\", \"col\": 3}}, {\"id\": \"rm00000008\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"New Renewal\", \"col\": 3}}, {\"id\": \"rm00000009\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Customers\", \"col\": 3}}, {\"id\": \"rm00000010\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Product Types\", \"col\": 3}}, {\"id\": \"rm00000011\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Renewal Settings\", \"col\": 3}}]",
+ "creation": "2026-10-29 10:00:00.000000",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "calendar",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "Renewal Management",
+ "links": [],
+ "modified": "2026-10-29 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Renewal Management",
+ "name": "Renewal Management",
+ "number_cards": [
+  {
+   "label": "Renewals Due",
+   "number_card_name": "Renewals Due"
+  },
+  {
+   "label": "Renewals Expired",
+   "number_card_name": "Renewals Expired"
+  },
+  {
+   "label": "Payment Pending",
+   "number_card_name": "Payment Pending"
+  },
+  {
+   "label": "Active Renewals",
+   "number_card_name": "Active Renewals"
+  }
+ ],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Renewal Manager"
+  },
+  {
+   "role": "Renewal User"
+  }
+ ],
+ "sequence_id": 1.0,
+ "shortcuts": [
+  {
+   "label": "Renewals",
+   "type": "DocType",
+   "link_to": "Renewal",
+   "doc_view": "List",
+   "color": "Blue",
+   "stats_filter": "[[\"Renewal\", \"status\", \"=\", \"Due\"]]",
+   "format": "{} Due"
+  },
+  {
+   "label": "New Renewal",
+   "type": "DocType",
+   "link_to": "Renewal",
+   "doc_view": "New",
+   "color": "Green"
+  },
+  {
+   "label": "Customers",
+   "type": "DocType",
+   "link_to": "Renewal Customer",
+   "doc_view": "List",
+   "color": "Grey"
+  },
+  {
+   "label": "Product Types",
+   "type": "DocType",
+   "link_to": "Renewal Product Type",
+   "doc_view": "List",
+   "color": "Grey"
+  },
+  {
+   "label": "Renewal Settings",
+   "type": "DocType",
+   "link_to": "Renewal Settings",
+   "doc_view": "",
+   "color": "Grey"
+  }
+ ],
+ "title": "Renewal Management",
+ "type": "Workspace"
+}

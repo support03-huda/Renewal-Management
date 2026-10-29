@@ -1,0 +1,111 @@
+{
+ "actions": [],
+ "creation": "2026-10-29 10:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "sec_email",
+  "send_emails",
+  "sender_email",
+  "notify_emails",
+  "sec_defaults",
+  "default_remind_before_days",
+  "default_follow_up_every",
+  "cb1",
+  "default_hard_call_before_days",
+  "default_clearance_every_days"
+ ],
+ "fields": [
+  {
+   "fieldname": "sec_email",
+   "fieldtype": "Section Break",
+   "label": "Email"
+  },
+  {
+   "fieldname": "send_emails",
+   "fieldtype": "Check",
+   "label": "Send Reminder Emails",
+   "default": "1"
+  },
+  {
+   "fieldname": "sender_email",
+   "fieldtype": "Data",
+   "label": "Send From",
+   "options": "Email",
+   "default": "support@softworld.co.in",
+   "description": "Must be an Email Account with outgoing enabled"
+  },
+  {
+   "fieldname": "notify_emails",
+   "fieldtype": "Small Text",
+   "label": "Send Reminders To",
+   "default": "support@softworld.co.in",
+   "description": "Every reminder goes to these emails. Comma separated."
+  },
+  {
+   "fieldname": "sec_defaults",
+   "fieldtype": "Section Break",
+   "label": "Defaults for New Renewals"
+  },
+  {
+   "fieldname": "default_remind_before_days",
+   "fieldtype": "Int",
+   "label": "Remind Before (Days)",
+   "default": "30"
+  },
+  {
+   "fieldname": "default_follow_up_every",
+   "fieldtype": "Select",
+   "label": "Then Follow Up",
+   "options": "Every Day\nEvery Week\nEvery Month",
+   "default": "Every Week"
+  },
+  {
+   "fieldname": "cb1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "default_hard_call_before_days",
+   "fieldtype": "Int",
+   "label": "Hard Call Before (Days)",
+   "default": "7"
+  },
+  {
+   "fieldname": "default_clearance_every_days",
+   "fieldtype": "Int",
+   "label": "Clearance Reminder Every (Days)",
+   "default": "3"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-10-29 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Renewal Management",
+ "name": "Renewal Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
+  },
+  {
+   "role": "Renewal Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "issingle": 1
+}

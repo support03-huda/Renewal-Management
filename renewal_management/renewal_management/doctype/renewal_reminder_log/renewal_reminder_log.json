@@ -1,0 +1,56 @@
+{
+ "actions": [],
+ "creation": "2026-10-29 10:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "sent_on",
+  "reminder_type",
+  "sent_to",
+  "note"
+ ],
+ "fields": [
+  {
+   "fieldname": "sent_on",
+   "fieldtype": "Datetime",
+   "label": "Sent On",
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "reminder_type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "Renewal\nHard Call\nBill Date\nClearance\nManual",
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "sent_to",
+   "fieldtype": "Small Text",
+   "label": "Sent To",
+   "in_list_view": 1,
+   "columns": 4
+  },
+  {
+   "fieldname": "note",
+   "fieldtype": "Data",
+   "label": "Note",
+   "in_list_view": 1,
+   "columns": 2
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-10-29 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Renewal Management",
+ "name": "Renewal Reminder Log",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "istable": 1,
+ "editable_grid": 0
+}

@@ -1,0 +1,37 @@
+{% extends "templates/web.html" %}
+
+{% block page_content %}
+<div style="max-width:520px;margin:40px auto">
+{% if not doc or not action %}
+	<h3>{{ _("Link not valid") }}</h3>
+	<p class="text-muted">{{ _("This link is invalid or has expired.") }}</p>
+{% elif closed %}
+	<h3>{{ _("Already closed") }}</h3>
+	<p class="text-muted">{{ doc.name }} - {{ doc.product_name }}: {{ doc.status }}{% if doc.payment_status %} / {{ _("Payment") }} {{ doc.payment_status }}{% endif %}</p>
+{% else %}
+	<h3>{{ action_label }}</h3>
+	<table class="table table-sm">
+		<tr><td class="text-muted">{{ _("Customer") }}</td><td><b>{{ doc.customer }}</b></td></tr>
+		<tr><td class="text-muted">{{ _("Product") }}</td><td><b>{{ doc.product_name }}</b> ({{ doc.product_type }})</td></tr>
+		<tr><td class="text-muted">{{ _("Quantity") }}</td><td>{{ doc.quantity }}</td></tr>
+		<tr><td class="text-muted">{{ _("Expiry Date") }}</td><td>{{ frappe.format(doc.expiry_date, "Date") }}</td></tr>
+		<tr><td class="text-muted">{{ _("Billing Cycle") }}</td><td>{{ doc.billing_cycle }}</td></tr>
+	</table>
+	<form method="POST" action="/api/method/renewal_management.api.renewal_action">
+		<input type="hidden" name="name" value="{{ doc.name }}">
+		<input type="hidden" name="key" value="{{ key }}">
+		<input type="hidden" name="action" value="{{ action }}">
+		<input type="hidden" name="csrf_token" value="{{ csrf }}">
+		{% if action == "renewed" and doc.billing_cycle == "Custom" %}
+		<div class="form-group">
+			<label>{{ _("New Expiry Date") }}</label>
+			<input type="date" name="new_expiry_date" class="form-control" required>
+		</div>
+		{% elif action == "renewed" %}
+		<p class="text-muted">{{ _("Reminders stop and the record for the next period ({0}) is created.").format(doc.billing_cycle) }}</p>
+		{% endif %}
+		<button type="submit" class="btn btn-primary">{{ _("Confirm") }}: {{ action_label }}</button>
+	</form>
+{% endif %}
+</div>
+{% endblock %}
