@@ -9,9 +9,12 @@ frappe.listview_settings["Renewal"] = {
 	},
 	formatters: {
 		days_left(value, df, doc) {
-			if (doc.status === "Lost") return "";
-			const colour = value < 0 ? "red" : value <= 7 ? "orange" : "inherit";
-			return `<span style="color:var(--${colour}-500, ${colour})">${value}</span>`;
+			// Same pill as the status indicator: red expired / today, orange <= 7, yellow <= 30, green later.
+			if (doc.status === "Lost" || value === null || value === undefined || value === "") return "";
+			const days = cint(value);
+			const colour = days <= 0 ? "red" : days <= 7 ? "orange" : days <= 30 ? "yellow" : "green";
+			const text = days < 0 ? __("{0} days ago", [-days]) : days === 0 ? __("Today") : __("{0} days", [days]);
+			return `<span class="indicator-pill no-indicator-dot whitespace-nowrap ${colour}">${text}</span>`;
 		},
 	},
 };
