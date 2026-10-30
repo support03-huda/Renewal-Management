@@ -1,11 +1,12 @@
 {
  "actions": [],
- "creation": "2026-10-30 15:00:00.000000",
+ "creation": "2026-10-30 17:00:00.000000",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "sec_customer",
   "customer",
+  "customer_name",
   "customer_email",
   "mobile",
   "cb1",
@@ -63,8 +64,15 @@
    "label": "Customer",
    "options": "Renewal Customer",
    "reqd": 1,
-   "in_list_view": 1,
    "in_standard_filter": 1
+  },
+  {
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name",
+   "fetch_from": "customer.customer_name",
+   "read_only": 1,
+   "in_list_view": 1
   },
   {
    "fieldname": "customer_email",
@@ -371,7 +379,7 @@
  ],
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-10-30 15:00:00.000000",
+ "modified": "2026-10-30 17:00:00.000000",
  "modified_by": "Administrator",
  "module": "Renewal Management",
  "name": "Renewal",
@@ -419,6 +427,6 @@
  "naming_rule": "Expression (old style)",
  "title_field": "product_name",
  "show_title_field_in_link": 1,
- "search_fields": "customer,product_name,product_type,expiry_date",
+ "search_fields": "customer_name,product_name,product_type,expiry_date",
  "track_changes": 1
 }

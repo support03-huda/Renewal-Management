@@ -11,7 +11,7 @@
 {% else %}
 	<h3>{{ action_label }}</h3>
 	<table class="table table-sm">
-		<tr><td class="text-muted">{{ _("Customer") }}</td><td><b>{{ doc.customer }}</b></td></tr>
+		<tr><td class="text-muted">{{ _("Customer") }}</td><td><b>{{ doc.customer_name or doc.customer }}</b></td></tr>
 		<tr><td class="text-muted">{{ _("Product") }}</td><td><b>{{ doc.product_name }}</b> ({{ doc.product_type }})</td></tr>
 		<tr><td class="text-muted">{{ _("Quantity") }}</td><td>{{ doc.quantity }}</td></tr>
 		<tr><td class="text-muted">{{ _("Expiry Date") }}</td><td>{{ frappe.format(doc.expiry_date, "Date") }}</td></tr>

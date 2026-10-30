@@ -1,6 +1,6 @@
 {
  "actions": [],
- "creation": "2026-10-30 15:00:00.000000",
+ "creation": "2026-10-30 17:00:00.000000",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -56,7 +56,7 @@
  ],
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-10-30 15:00:00.000000",
+ "modified": "2026-10-30 17:00:00.000000",
  "modified_by": "Administrator",
  "module": "Renewal Management",
  "name": "Renewal Customer",
@@ -100,9 +100,11 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "autoname": "field:customer_name",
- "naming_rule": "By fieldname",
+ "autoname": "CUST-.#####",
+ "naming_rule": "Expression (old style)",
+ "allow_rename": 1,
  "title_field": "customer_name",
- "search_fields": "contact_person,email,mobile",
+ "show_title_field_in_link": 1,
+ "search_fields": "customer_name,contact_person,email,mobile",
  "quick_entry": 1
 }

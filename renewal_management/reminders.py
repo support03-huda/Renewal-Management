@@ -100,7 +100,7 @@ def internal_emails(doc):
 
 
 def subject_line(doc):
-	return f"{doc.product_name} ({doc.product_type}) - {doc.customer}"
+	return f"{doc.product_name} ({doc.product_type}) - {doc.customer_name or doc.customer}"
 
 
 def send_reminder(doc, kind):
@@ -108,7 +108,7 @@ def send_reminder(doc, kind):
 	if kind == "Clearance":
 		subject = _("Payment pending: {0}").format(subject_line(doc))
 		intro = _("{0} was renewed on {1} but the payment is not cleared yet. Follow up with the customer.").format(
-			doc.customer, format_date(doc.renewed_on) if doc.renewed_on else "-"
+			doc.customer_name or doc.customer, format_date(doc.renewed_on) if doc.renewed_on else "-"
 		)
 	elif doc.days_left is not None and doc.days_left < 0:
 		subject = _("Expired: {0}").format(subject_line(doc))
@@ -144,7 +144,7 @@ def create_hard_call(doc):
 			"reference_type": "Renewal",
 			"reference_name": doc.name,
 			"description": _("Hard call: phone {0} ({1}) about renewal of {2}, expiring {3}").format(
-				doc.customer, doc.mobile or "-", doc.product_name, format_date(doc.expiry_date)
+				doc.customer_name or doc.customer, doc.mobile or "-", doc.product_name, format_date(doc.expiry_date)
 			),
 		}
 	).insert(ignore_permissions=True)
@@ -184,7 +184,7 @@ def log(doc, kind, sent_to):
 
 def body(doc, intro, action="renewed"):
 	rows = [
-		(_("Customer"), doc.customer),
+		(_("Customer"), doc.customer_name or doc.customer),
 		(_("Product Type"), doc.product_type),
 		(_("Product"), doc.product_name),
 		(_("Supplier"), doc.supplier or "-"),
