@@ -17,11 +17,5 @@ def get_context(context):
 	context.action_label = ACTIONS.get(context.action)
 	context.key = args.get("key")
 	context.csrf = get_csrf_token() if frappe.session.user != "Guest" else ""
-	context.closed = bool(
-		context.doc
-		and (
-			(context.action == "renewed" and context.doc.status in ("Renewed", "Lost"))
-			or (context.action == "payment_cleared" and context.doc.payment_status != "Pending")
-		)
-	)
+	context.closed = bool(context.doc and context.doc.status == "Lost")
 	context.title = context.action_label or "Renewal"

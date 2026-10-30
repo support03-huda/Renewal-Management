@@ -7,7 +7,7 @@
 	<p class="text-muted">{{ _("This link is invalid or has expired.") }}</p>
 {% elif closed %}
 	<h3>{{ _("Already closed") }}</h3>
-	<p class="text-muted">{{ doc.name }} - {{ doc.product_name }}: {{ doc.status }}{% if doc.payment_status %} / {{ _("Payment") }} {{ doc.payment_status }}{% endif %}</p>
+	<p class="text-muted">{{ doc.name }} - {{ doc.product_name }}: {{ doc.status }}</p>
 {% else %}
 	<h3>{{ action_label }}</h3>
 	<table class="table table-sm">
@@ -28,7 +28,7 @@
 			<input type="date" name="new_expiry_date" class="form-control" required>
 		</div>
 		{% elif action == "renewed" %}
-		<p class="text-muted">{{ _("Reminders stop and the record for the next period ({0}) is created.").format(doc.billing_cycle) }}</p>
+		<p class="text-muted">{{ _("The expiry date moves one {0} cycle ahead and today is saved as Renewed On.").format(doc.billing_cycle) }}</p>
 		{% endif %}
 		<button type="submit" class="btn btn-primary">{{ _("Confirm") }}: {{ action_label }}</button>
 	</form>

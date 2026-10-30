@@ -7,18 +7,11 @@ frappe.ui.form.on("Renewal", {
 			if (!frm.doc.expiry_date) set_expiry(frm);
 			return;
 		}
-		const open = ["Active", "Due", "Expired"].includes(frm.doc.status);
+		const open = frm.doc.status !== "Lost";
 
 		if (open) {
 			frm.add_custom_button(__("Renewed"), () => mark_renewed(frm), __("Mark As"));
 			frm.add_custom_button(__("Lost"), () => mark_lost(frm), __("Mark As"));
-		}
-		if (frm.doc.payment_status === "Pending") {
-			frm.add_custom_button(__("Payment Cleared"), () =>
-				frm.call("mark_payment_cleared").then(() => frm.reload_doc())
-			, __("Mark As"));
-		}
-		if (open || frm.doc.payment_status === "Pending") {
 			frm.add_custom_button(__("Send Reminder Now"), () =>
 				frm.call("send_reminder_now").then((r) => {
 					frappe.show_alert({ message: __("Reminder sent to {0}", [(r.message || []).join(", ")]), indicator: "green" });
@@ -26,11 +19,8 @@ frappe.ui.form.on("Renewal", {
 				})
 			);
 		}
-		if (frm.doc.next_renewal) {
-			frm.add_custom_button(__("Next Period"), () => frappe.set_route("Form", "Renewal", frm.doc.next_renewal));
-		}
 
-		const colour = { Active: "blue", Due: "orange", Expired: "red", Renewed: "green", Lost: "grey" }[frm.doc.status];
+		const colour = { Active: "blue", Due: "orange", Expired: "red", Lost: "grey" }[frm.doc.status];
 		if (open) {
 			const left = frm.doc.days_left;
 			frm.dashboard.set_headline(left < 0
@@ -75,24 +65,24 @@ function set_expiry(frm) {
 }
 
 function mark_renewed(frm) {
-	const custom = frm.doc.billing_cycle === "Custom";
-	const run = (values) =>
-		frm.call("mark_renewed", { new_expiry_date: values && values.new_expiry_date }).then((r) => {
-			frappe.show_alert({ message: __("Next period created: {0}", [r.message]), indicator: "green" });
-			frm.reload_doc();
-		});
-
-	if (custom) {
-		frappe.prompt(
-			[{ fieldname: "new_expiry_date", fieldtype: "Date", label: __("New Expiry Date"), reqd: 1 }],
-			run, __("Mark Renewed"), __("Renew")
-		);
-	} else {
-		frappe.confirm(
-			__("Mark as Renewed and create the next {0} record?", [frm.doc.billing_cycle.toLowerCase()]),
-			() => run()
-		);
-	}
+	// Renews this same record: expiry moves ahead, Renewed On is saved, history gets a line.
+	const months = CYCLE_MONTHS[frm.doc.billing_cycle];
+	frappe.prompt(
+		[
+			{ fieldname: "renewed_on", fieldtype: "Date", label: __("Renewed On"), default: frappe.datetime.get_today(), reqd: 1 },
+			{
+				fieldname: "new_expiry_date", fieldtype: "Date", label: __("New Expiry Date"), reqd: 1,
+				default: months ? frappe.datetime.add_months(frm.doc.expiry_date, months) : null,
+				description: __("Current expiry: {0}", [frappe.datetime.str_to_user(frm.doc.expiry_date)]),
+			},
+		],
+		(values) =>
+			frm.call("mark_renewed", values).then((r) => {
+				frappe.show_alert({ message: __("Renewed. New expiry: {0}", [frappe.datetime.str_to_user(r.message)]), indicator: "green" });
+				frm.reload_doc();
+			}),
+		__("Mark Renewed"), __("Renew")
+	);
 }
 
 function mark_lost(frm) {

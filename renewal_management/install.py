@@ -33,7 +33,6 @@ def setup_defaults():
 		settings.default_remind_before_days = 30
 		settings.default_follow_up_every = "Every Week"
 		settings.default_hard_call_before_days = 7
-		settings.default_clearance_every_days = 3
 		settings.save(ignore_permissions=True)
 
 	setup_email_account()

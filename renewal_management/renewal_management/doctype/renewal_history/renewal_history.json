@@ -1,0 +1,63 @@
+{
+ "actions": [],
+ "creation": "2026-10-30 19:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "renewed_on",
+  "old_expiry_date",
+  "new_expiry_date",
+  "amount",
+  "note"
+ ],
+ "fields": [
+  {
+   "fieldname": "renewed_on",
+   "fieldtype": "Date",
+   "label": "Renewed On",
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "old_expiry_date",
+   "fieldtype": "Date",
+   "label": "Old Expiry",
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "new_expiry_date",
+   "fieldtype": "Date",
+   "label": "New Expiry",
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount",
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "note",
+   "fieldtype": "Data",
+   "label": "Note",
+   "in_list_view": 1,
+   "columns": 2
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-10-30 19:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Renewal Management",
+ "name": "Renewal History",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "istable": 1,
+ "editable_grid": 0
+}

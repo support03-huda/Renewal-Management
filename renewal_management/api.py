@@ -1,7 +1,7 @@
 # Copyright (c) 2026, huda and contributors
 # For license information, please see license.txt
 
-"""Email links that close a Renewal without logging in.
+"""Email link that marks a Renewal as renewed without logging in.
 
 The email button opens /renewal_action (a confirm page, so mail scanners that
 open links don't trigger anything); its form POSTs here. The per-record
@@ -14,7 +14,7 @@ import frappe
 from frappe import _
 from frappe.utils import get_url
 
-ACTIONS = {"renewed": _("Mark as Renewed"), "payment_cleared": _("Mark Payment Cleared")}
+ACTIONS = {"renewed": _("Mark as Renewed")}
 
 
 def action_url(doc, action):
@@ -40,21 +40,14 @@ def renewal_action(name=None, key=None, action=None, new_expiry_date=None):
 		return page(_("Link not valid"), _("This link is invalid or has expired."), "red")
 
 	doc.flags.ignore_permissions = True  # the key was checked above
+	if doc.status == "Lost":
+		return page(_("Already closed"), _("{0} is marked Lost.").format(doc.name), "orange")
 	try:
-		if action == "renewed":
-			if doc.status in ("Renewed", "Lost"):
-				return page(_("Already closed"), _("{0} is already {1}.").format(doc.name, doc.status), "orange")
-			next_name = doc.mark_renewed(new_expiry_date)
-			doc.add_comment("Info", _("Marked Renewed from the email link"))
-			msg = _("{0} - {1} is marked Renewed. Reminders have stopped. The next period is {2}.").format(
-				doc.name, doc.product_name, next_name
-			)
-		else:
-			if doc.payment_status != "Pending":
-				return page(_("Already closed"), _("Payment for {0} is already {1}.").format(doc.name, doc.payment_status or "-"), "orange")
-			doc.mark_payment_cleared()
-			doc.add_comment("Info", _("Payment marked Cleared from the email link"))
-			msg = _("Payment for {0} - {1} is marked Cleared. Clearance reminders have stopped.").format(doc.name, doc.product_name)
+		new_expiry = doc.mark_renewed(new_expiry_date)
+		doc.add_comment("Info", _("Marked Renewed from the email link"))
+		msg = _("{0} - {1} is renewed. New expiry date: {2}. Reminders will start again before it.").format(
+			doc.name, doc.product_name, frappe.format(new_expiry, "Date")
+		)
 		frappe.db.commit()
 	except frappe.ValidationError as e:
 		frappe.db.rollback()

@@ -1,6 +1,6 @@
 {
  "actions": [],
- "creation": "2026-10-30 17:00:00.000000",
+ "creation": "2026-10-30 19:00:00.000000",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -19,6 +19,7 @@
   "billing_cycle",
   "start_date",
   "expiry_date",
+  "renewed_on",
   "cb2",
   "bill_date",
   "days_left",
@@ -37,16 +38,10 @@
   "hard_call_todo",
   "bill_reminder_sent",
   "action_key",
-  "sec_outcome",
-  "renewed_on",
-  "next_renewal",
-  "previous_renewal",
+  "sec_history",
+  "renewal_history",
+  "sec_lost",
   "lost_reason",
-  "cb5",
-  "payment_status",
-  "clearance_every_days",
-  "next_clearance_on",
-  "payment_cleared_on",
   "sec_log",
   "reminder_log",
   "sec_notes",
@@ -159,6 +154,15 @@
    "description": "Auto: Renewal Date + billing cycle. Enter it yourself for Custom."
   },
   {
+   "fieldname": "renewed_on",
+   "fieldtype": "Date",
+   "label": "Renewed On",
+   "read_only": 1,
+   "no_copy": 1,
+   "in_list_view": 1,
+   "description": "When it was last renewed. Set by Mark As > Renewed."
+  },
+  {
    "fieldname": "cb2",
    "fieldtype": "Column Break"
   },
@@ -180,7 +184,7 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "Active\nDue\nExpired\nRenewed\nLost",
+   "options": "Active\nDue\nExpired\nLost",
    "default": "Active",
    "read_only": 1,
    "in_standard_filter": 1,
@@ -205,7 +209,7 @@
    "label": "Then Follow Up",
    "options": "Every Day\nEvery Week\nEvery Month",
    "default": "Every Week",
-   "description": "Repeats until the renewal is marked Renewed or Lost"
+   "description": "Repeats until it is marked Renewed (then it starts again for the next expiry) or Lost"
   },
   {
    "fieldname": "cb3",
@@ -279,77 +283,32 @@
    "read_only": 1,
    "no_copy": 1,
    "hidden": 1,
-   "description": "Secret in the email links that close this record"
+   "description": "Secret in the email link that marks this record Renewed. Changes after every renewal."
   },
   {
-   "fieldname": "sec_outcome",
+   "fieldname": "sec_history",
    "fieldtype": "Section Break",
-   "label": "Renewal Outcome",
-   "depends_on": "eval:['Renewed','Lost'].includes(doc.status) || doc.previous_renewal"
+   "label": "Renewal History",
+   "depends_on": "eval:doc.renewal_history && doc.renewal_history.length"
   },
   {
-   "fieldname": "renewed_on",
-   "fieldtype": "Date",
-   "label": "Renewed On",
+   "fieldname": "renewal_history",
+   "fieldtype": "Table",
+   "label": "Renewal History",
+   "options": "Renewal History",
    "read_only": 1,
    "no_copy": 1
   },
   {
-   "fieldname": "next_renewal",
-   "fieldtype": "Link",
-   "label": "Next Period Record",
-   "options": "Renewal",
-   "read_only": 1,
-   "no_copy": 1
-  },
-  {
-   "fieldname": "previous_renewal",
-   "fieldtype": "Link",
-   "label": "Previous Period Record",
-   "options": "Renewal",
-   "read_only": 1,
-   "no_copy": 1
+   "fieldname": "sec_lost",
+   "fieldtype": "Section Break",
+   "label": "Lost",
+   "depends_on": "eval:doc.status=='Lost'"
   },
   {
    "fieldname": "lost_reason",
    "fieldtype": "Small Text",
    "label": "Lost Reason",
-   "read_only": 1,
-   "no_copy": 1,
-   "depends_on": "eval:doc.status=='Lost'"
-  },
-  {
-   "fieldname": "cb5",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "payment_status",
-   "fieldtype": "Select",
-   "label": "Payment",
-   "options": "\nPending\nCleared",
-   "read_only": 1,
-   "no_copy": 1,
-   "in_standard_filter": 1
-  },
-  {
-   "fieldname": "clearance_every_days",
-   "fieldtype": "Int",
-   "label": "Clearance Reminder Every (Days)",
-   "default": "3",
-   "non_negative": 1,
-   "description": "After renewal, you are reminded every few days until payment is cleared"
-  },
-  {
-   "fieldname": "next_clearance_on",
-   "fieldtype": "Date",
-   "label": "Next Clearance Reminder",
-   "read_only": 1,
-   "no_copy": 1
-  },
-  {
-   "fieldname": "payment_cleared_on",
-   "fieldtype": "Date",
-   "label": "Payment Cleared On",
    "read_only": 1,
    "no_copy": 1
   },
@@ -379,7 +338,7 @@
  ],
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-10-30 17:00:00.000000",
+ "modified": "2026-10-30 19:00:00.000000",
  "modified_by": "Administrator",
  "module": "Renewal Management",
  "name": "Renewal",

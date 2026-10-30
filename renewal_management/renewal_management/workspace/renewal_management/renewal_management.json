@@ -1,8 +1,8 @@
 {
  "app": "renewal_management",
  "charts": [],
- "content": "[{\"id\": \"rm00000001\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Renewal Management</b></span>\", \"col\": 12}}, {\"id\": \"rm00000002\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Renewals Due\", \"col\": 3}}, {\"id\": \"rm00000003\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Renewals Expired\", \"col\": 3}}, {\"id\": \"rm00000004\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Payment Pending\", \"col\": 3}}, {\"id\": \"rm00000005\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Active Renewals\", \"col\": 3}}, {\"id\": \"rm00000006\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h5\\\"><b>Go To</b></span>\", \"col\": 12}}, {\"id\": \"rm00000007\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Renewals\", \"col\": 3}}, {\"id\": \"rm00000008\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"New Renewal\", \"col\": 3}}, {\"id\": \"rm00000009\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"To Do\", \"col\": 3}}, {\"id\": \"rm00000010\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Customers\", \"col\": 3}}, {\"id\": \"rm00000011\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Suppliers\", \"col\": 3}}, {\"id\": \"rm00000012\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Product Types\", \"col\": 3}}, {\"id\": \"rm00000013\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Renewal Settings\", \"col\": 3}}]",
- "creation": "2026-10-30 17:00:00.000000",
+ "content": "[{\"id\": \"rm00000001\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Renewal Management</b></span>\", \"col\": 12}}, {\"id\": \"rm00000002\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Renewals Due\", \"col\": 3}}, {\"id\": \"rm00000003\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Renewals Expired\", \"col\": 3}}, {\"id\": \"rm00000004\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Renewed This Month\", \"col\": 3}}, {\"id\": \"rm00000005\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Active Renewals\", \"col\": 3}}, {\"id\": \"rm00000006\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h5\\\"><b>Go To</b></span>\", \"col\": 12}}, {\"id\": \"rm00000007\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Renewals\", \"col\": 3}}, {\"id\": \"rm00000008\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"New Renewal\", \"col\": 3}}, {\"id\": \"rm00000009\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"To Do\", \"col\": 3}}, {\"id\": \"rm00000010\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Customers\", \"col\": 3}}, {\"id\": \"rm00000011\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Suppliers\", \"col\": 3}}, {\"id\": \"rm00000012\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Product Types\", \"col\": 3}}, {\"id\": \"rm00000013\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Renewal Settings\", \"col\": 3}}]",
+ "creation": "2026-10-30 19:00:00.000000",
  "custom_blocks": [],
  "docstatus": 0,
  "doctype": "Workspace",
@@ -13,7 +13,7 @@
  "is_hidden": 0,
  "label": "Renewal Management",
  "links": [],
- "modified": "2026-10-30 17:00:00.000000",
+ "modified": "2026-10-30 19:00:00.000000",
  "modified_by": "Administrator",
  "module": "Renewal Management",
  "name": "Renewal Management",
@@ -27,8 +27,8 @@
    "number_card_name": "Renewals Expired"
   },
   {
-   "label": "Payment Pending",
-   "number_card_name": "Payment Pending"
+   "label": "Renewed This Month",
+   "number_card_name": "Renewed This Month"
   },
   {
    "label": "Active Renewals",

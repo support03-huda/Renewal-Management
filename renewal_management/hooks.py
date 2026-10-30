@@ -13,7 +13,7 @@ after_migrate = ["renewal_management.install.setup_defaults"]
 
 scheduler_events = {
 	"cron": {
-		# Every morning at 09:00: renewal, hard call, bill date and payment clearance reminders.
+		# Every morning at 09:00: renewal, hard call and bill date reminders.
 		"0 9 * * *": ["renewal_management.reminders.daily"],
 	},
 }

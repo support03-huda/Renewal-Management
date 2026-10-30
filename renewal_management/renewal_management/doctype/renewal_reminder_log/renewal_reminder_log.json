@@ -1,6 +1,6 @@
 {
  "actions": [],
- "creation": "2026-10-30 17:00:00.000000",
+ "creation": "2026-10-30 19:00:00.000000",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -21,7 +21,7 @@
    "fieldname": "reminder_type",
    "fieldtype": "Select",
    "label": "Type",
-   "options": "Renewal\nHard Call\nBill Date\nClearance\nManual",
+   "options": "Renewal\nHard Call\nBill Date\nClearance\nManual\nRenewed",
    "in_list_view": 1,
    "columns": 2
   },
@@ -42,7 +42,7 @@
  ],
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-10-30 17:00:00.000000",
+ "modified": "2026-10-30 19:00:00.000000",
  "modified_by": "Administrator",
  "module": "Renewal Management",
  "name": "Renewal Reminder Log",

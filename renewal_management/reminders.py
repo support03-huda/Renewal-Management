@@ -6,13 +6,11 @@
 Per open Renewal (Active / Due / Expired), every morning:
   - days_left and status are refreshed;
   - from `reminder_start_date` (expiry - remind_before_days) a reminder goes to the
-    customer and the internal team, then repeats every day / week / month until the
-    record is marked Renewed or Lost;
+    internal team, then repeats every day / week / month until the record is marked
+    Renewed (the expiry moves ahead and it all starts again) or Lost;
   - from `hard_call_date` (expiry - hard_call_before_days) a ToDo to phone the
     customer is created once for `assigned_to`;
   - on `bill_date` the internal team is told to raise the bill.
-Per Renewed record with payment Pending, a clearance reminder goes out every
-`clearance_every_days` until payment is marked Cleared.
 """
 
 import frappe
@@ -27,8 +25,6 @@ FOLLOW_UP_DAYS = {"Every Day": 1, "Every Week": 7}
 def daily():
 	for name in frappe.get_all("Renewal", filters={"status": ["in", ["Active", "Due", "Expired"]]}, pluck="name"):
 		run_safely(process_open, name)
-	for name in frappe.get_all("Renewal", filters={"status": "Renewed", "payment_status": "Pending"}, pluck="name"):
-		run_safely(process_clearance, name)
 
 
 def run_safely(fn, name):
@@ -64,15 +60,6 @@ def process_open(doc):
 	doc.save()
 
 
-def process_clearance(doc):
-	if doc.next_clearance_on and getdate(today()) >= getdate(doc.next_clearance_on):
-		send_reminder(doc, "Clearance")
-		doc.next_clearance_on = add_days(today(), doc.clearance_every_days or 3)
-		doc.flags.ignore_permissions = True
-		doc.flags.ignore_version = True
-		doc.save()
-
-
 def next_follow_up(from_date, every):
 	if every == "Every Month":
 		return add_months(from_date, 1)
@@ -105,12 +92,7 @@ def subject_line(doc):
 
 def send_reminder(doc, kind):
 	"""Email the internal team (never the customer) and log it on the doc."""
-	if kind == "Clearance":
-		subject = _("Payment pending: {0}").format(subject_line(doc))
-		intro = _("{0} was renewed on {1} but the payment is not cleared yet. Follow up with the customer.").format(
-			doc.customer_name or doc.customer, format_date(doc.renewed_on) if doc.renewed_on else "-"
-		)
-	elif doc.days_left is not None and doc.days_left < 0:
+	if doc.days_left is not None and doc.days_left < 0:
 		subject = _("Expired: {0}").format(subject_line(doc))
 		intro = _("This expired on {0} ({1} days ago) and is not renewed yet.").format(format_date(doc.expiry_date), -doc.days_left)
 	else:
@@ -120,8 +102,7 @@ def send_reminder(doc, kind):
 		)
 
 	recipients = internal_emails(doc)
-	action = "payment_cleared" if kind == "Clearance" else "renewed"
-	send(doc, recipients, subject, body(doc, intro, action=action))
+	send(doc, recipients, subject, body(doc, intro, action="renewed"))
 	log(doc, kind, recipients)
 	doc.last_reminder_on = today()
 	return recipients
@@ -182,10 +163,8 @@ def log(doc, kind, sent_to):
 	)
 
 
-def header_style(doc, action):
+def header_style(doc):
 	"""(colour, label, big number, caption) for the top of the email."""
-	if action == "payment_cleared":
-		return "#7C3AED", _("PAYMENT PENDING"), "₹", _("payment not cleared")
 	left = doc.days_left or 0
 	if left < 0:
 		return "#DC2626", _("EXPIRED"), str(-left), _("days ago")
@@ -196,13 +175,14 @@ def header_style(doc, action):
 
 def body(doc, intro, action="renewed"):
 	esc = frappe.utils.escape_html
-	colour, label, big, caption = header_style(doc, action)
+	colour, label, big, caption = header_style(doc)
 	rows = [
 		(_("Customer"), doc.customer_name or doc.customer),
 		(_("Product Type"), doc.product_type),
 		(_("Quantity"), doc.quantity),
 		(_("Billing Cycle"), doc.billing_cycle),
 		(_("Expiry Date"), format_date(doc.expiry_date)),
+		(_("Last Renewed On"), format_date(doc.renewed_on) if doc.renewed_on else None),
 		(_("Bill Date"), format_date(doc.bill_date) if doc.bill_date else None),
 		(_("Amount"), fmt_money(doc.amount) if doc.amount else None),
 		(_("Supplier"), frappe.db.get_value("Renewal Supplier", doc.supplier, "supplier_name") if doc.supplier else None),
@@ -246,7 +226,7 @@ def body(doc, intro, action="renewed"):
   <tr><td style="padding:20px 24px 4px 24px;color:#374151;font-size:14px;line-height:1.5">{intro}</td></tr>
   <tr><td style="padding:4px 24px 12px 24px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">{cells}</table></td></tr>
   <tr><td style="padding:8px 24px 16px 24px">{button}{open_btn}
-   <div style="color:#9CA3AF;font-size:12px;margin-top:6px">{_("Click once it is renewed / paid and these reminders stop.")}</div>
+   <div style="color:#9CA3AF;font-size:12px;margin-top:6px">{_("Click once it is renewed: the expiry moves to the next period and these reminders stop.")}</div>
   </td></tr>
   <tr><td style="background:#F9FAFB;padding:12px 24px;color:#9CA3AF;font-size:11px;border-top:1px solid #EEF0F2">
    {_("Renewal Management")} &middot; {esc(doc.name)}

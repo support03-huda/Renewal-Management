@@ -6,11 +6,11 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.utils import add_days, add_months, date_diff, getdate, today
 
-# Months added to the expiry when the next period's record is created.
+# Months added to the expiry when the record is renewed.
 CYCLE_MONTHS = {"Monthly": 1, "Quarterly": 3, "Half-Yearly": 6, "Annually": 12}
 
-# Status left alone by the daily job: the period is closed.
-CLOSED = ("Renewed", "Lost")
+# Status left alone by the daily job: the record is closed.
+CLOSED = ("Lost",)
 
 
 class Renewal(Document):
@@ -21,7 +21,6 @@ class Renewal(Document):
 			("remind_before_days", "default_remind_before_days"),
 			("follow_up_every", "default_follow_up_every"),
 			("hard_call_before_days", "default_hard_call_before_days"),
-			("clearance_every_days", "default_clearance_every_days"),
 		):
 			if self.get(field) in (None, "") and settings.get(default) not in (None, ""):
 				self.set(field, settings.get(default))
@@ -57,43 +56,42 @@ class Renewal(Document):
 			self.status = "Active"
 
 	@frappe.whitelist()
-	def mark_renewed(self, new_expiry_date=None):
-		"""Close this period as Renewed and create the next period's record."""
+	def mark_renewed(self, new_expiry_date=None, renewed_on=None):
+		"""Renew this same record: move the expiry one billing cycle ahead and log it in Renewal History."""
 		if self.status in CLOSED:
-			frappe.throw(_("This renewal is already {0}").format(self.status))
+			frappe.throw(_("This renewal is {0}").format(self.status))
 		if self.billing_cycle == "Custom" and not new_expiry_date:
 			frappe.throw(_("Enter the new expiry date for a Custom billing cycle"))
 
-		next_doc = self.make_next_period(new_expiry_date)
-		self.status = "Renewed"
-		self.renewed_on = today()
-		self.next_renewal = next_doc.name
-		self.payment_status = "Pending"
-		self.next_clearance_on = add_days(today(), self.clearance_every_days or 3)
-		self.close_hard_call_todo()
-		self.save()
-		return next_doc.name
+		old_expiry = getdate(self.expiry_date)
+		new_expiry = getdate(new_expiry_date) if new_expiry_date else getdate(add_months(old_expiry, CYCLE_MONTHS[self.billing_cycle]))
+		if new_expiry <= old_expiry:
+			frappe.throw(_("New expiry date must be after {0}").format(frappe.format(old_expiry, "Date")))
 
-	def make_next_period(self, new_expiry_date=None):
-		months = CYCLE_MONTHS.get(self.billing_cycle)
-		new_expiry = getdate(new_expiry_date) if new_expiry_date else getdate(add_months(self.expiry_date, months))
-		if new_expiry <= getdate(self.expiry_date):
-			frappe.throw(_("New expiry date must be after {0}").format(frappe.format(self.expiry_date, "Date")))
-
-		doc = frappe.copy_doc(self)
-		doc.start_date = self.expiry_date
-		doc.expiry_date = new_expiry
+		self.renewed_on = renewed_on or today()
+		self.append(
+			"renewal_history",
+			{"renewed_on": self.renewed_on, "old_expiry_date": old_expiry, "new_expiry_date": new_expiry, "amount": self.amount},
+		)
 		if self.bill_date:
-			# Keep the bill date the same distance before expiry as this period.
-			doc.bill_date = add_days(new_expiry, -date_diff(self.expiry_date, self.bill_date))
-		doc.status = "Active"
-		doc.previous_renewal = self.name
-		doc.insert(ignore_permissions=self.flags.ignore_permissions)
-		return doc
+			# Keep the bill date the same distance before expiry as last time.
+			self.bill_date = add_days(new_expiry, -date_diff(old_expiry, self.bill_date))
+		self.start_date = old_expiry
+		self.expiry_date = new_expiry
+
+		# Reminders start over for the new expiry.
+		self.close_hard_call_todo()
+		self.hard_call_todo = None
+		self.bill_reminder_sent = 0
+		self.last_reminder_on = None
+		self.next_reminder_on = None
+		self.action_key = None  # links in old reminder emails stop working
+		self.save()
+		return self.expiry_date
 
 	@frappe.whitelist()
 	def mark_lost(self, reason=None):
-		"""Close as Lost. No record is created for the next period."""
+		"""Close as Lost. Reminders stop."""
 		if self.status in CLOSED:
 			frappe.throw(_("This renewal is already {0}").format(self.status))
 		self.status = "Lost"
@@ -102,18 +100,10 @@ class Renewal(Document):
 		self.save()
 
 	@frappe.whitelist()
-	def mark_payment_cleared(self):
-		self.payment_status = "Cleared"
-		self.payment_cleared_on = today()
-		self.next_clearance_on = None
-		self.save()
-
-	@frappe.whitelist()
 	def send_reminder_now(self):
 		from renewal_management.reminders import send_reminder
 
-		kind = "Clearance" if self.payment_status == "Pending" else "Manual"
-		sent_to = send_reminder(self, kind)
+		sent_to = send_reminder(self, "Manual")
 		self.save()
 		return sent_to
 
