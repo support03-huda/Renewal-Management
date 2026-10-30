@@ -187,6 +187,7 @@ def body(doc, intro, action="renewed"):
 		(_("Customer"), doc.customer),
 		(_("Product Type"), doc.product_type),
 		(_("Product"), doc.product_name),
+		(_("Supplier"), doc.supplier or "-"),
 		(_("Quantity"), doc.quantity),
 		(_("Billing Cycle"), doc.billing_cycle),
 		(_("Expiry Date"), format_date(doc.expiry_date)),

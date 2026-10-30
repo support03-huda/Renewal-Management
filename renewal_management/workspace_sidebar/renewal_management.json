@@ -1,6 +1,6 @@
 {
  "app": "renewal_management",
- "creation": "2026-10-29 10:00:00.000000",
+ "creation": "2026-10-30 15:00:00.000000",
  "docstatus": 0,
  "doctype": "Workspace Sidebar",
  "header_icon": "calendar",
@@ -47,6 +47,18 @@
    "collapsible": 1,
    "indent": 0,
    "keep_closed": 0,
+   "label": "Suppliers",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link",
+   "link_to": "Renewal Supplier",
+   "icon": "truck"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "indent": 0,
+   "keep_closed": 0,
    "label": "Product Types",
    "link_type": "DocType",
    "show_arrow": 0,
@@ -67,7 +79,7 @@
    "icon": "settings"
   }
  ],
- "modified": "2026-10-29 10:00:00.000000",
+ "modified": "2026-10-30 15:00:00.000000",
  "modified_by": "Administrator",
  "module": "Renewal Management",
  "name": "Renewal Management",
