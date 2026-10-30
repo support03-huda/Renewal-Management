@@ -182,33 +182,74 @@ def log(doc, kind, sent_to):
 	)
 
 
+def header_style(doc, action):
+	"""(colour, label, big number, caption) for the top of the email."""
+	if action == "payment_cleared":
+		return "#7C3AED", _("PAYMENT PENDING"), "₹", _("payment not cleared")
+	left = doc.days_left or 0
+	if left < 0:
+		return "#DC2626", _("EXPIRED"), str(-left), _("days ago")
+	if left <= 7:
+		return "#EA580C", _("RENEW NOW"), str(left), _("days left")
+	return "#0F766E", _("RENEWAL DUE"), str(left), _("days left")
+
+
 def body(doc, intro, action="renewed"):
+	esc = frappe.utils.escape_html
+	colour, label, big, caption = header_style(doc, action)
 	rows = [
 		(_("Customer"), doc.customer_name or doc.customer),
 		(_("Product Type"), doc.product_type),
-		(_("Product"), doc.product_name),
-		(_("Supplier"), doc.supplier or "-"),
 		(_("Quantity"), doc.quantity),
 		(_("Billing Cycle"), doc.billing_cycle),
 		(_("Expiry Date"), format_date(doc.expiry_date)),
-		(_("Days Left"), doc.days_left),
+		(_("Bill Date"), format_date(doc.bill_date) if doc.bill_date else None),
+		(_("Amount"), fmt_money(doc.amount) if doc.amount else None),
+		(_("Supplier"), frappe.db.get_value("Renewal Supplier", doc.supplier, "supplier_name") if doc.supplier else None),
+		(_("Mobile"), doc.mobile),
+		(_("Customer Email"), doc.customer_email),
 	]
-	if doc.amount:
-		rows.append((_("Amount"), fmt_money(doc.amount)))
-	rows.append((_("Bill Date"), format_date(doc.bill_date) if doc.bill_date else "-"))
-	rows.append((_("Mobile"), doc.mobile or "-"))
-	rows.append((_("Customer Email"), doc.customer_email or "-"))
 	cells = "".join(
-		f'<tr><td style="padding:4px 12px 4px 0;color:#666">{frappe.utils.escape_html(str(k))}</td>'
-		f"<td style=\"padding:4px 0\"><b>{frappe.utils.escape_html(str(v if v is not None else ''))}</b></td></tr>"
+		f'<tr><td style="padding:9px 0;border-bottom:1px solid #EEF0F2;color:#6B7280;font-size:13px;width:40%">{esc(str(k))}</td>'
+		f'<td style="padding:9px 0;border-bottom:1px solid #EEF0F2;color:#111827;font-size:14px;font-weight:600">{esc(str(v))}</td></tr>'
 		for k, v in rows
+		if v not in (None, "")
 	)
-	link = f'<p><a href="{get_url_to_form("Renewal", doc.name)}">{_("Open {0}").format(doc.name)}</a></p>'
 	button = ""
 	if action:
 		button = (
-			f'<p style="margin:20px 0"><a href="{action_url(doc, action)}" style="background:#2490EF;color:#fff;'
-			f'padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:bold">{ACTIONS[action]}</a></p>'
-			f'<p style="color:#888;font-size:12px">{_("Click once renewed / paid to stop these reminders.")}</p>'
+			f'<a href="{action_url(doc, action)}" style="display:inline-block;background:{colour};color:#ffffff;'
+			f'padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;margin:0 8px 8px 0">'
+			f"✔ {ACTIONS[action]}</a>"
 		)
-	return f"<p>{intro}</p><table>{cells}</table>{button}{link}<p style=\"color:#888;font-size:12px\">{_('Renewal Management')}</p>"
+	open_btn = (
+		f'<a href="{get_url_to_form("Renewal", doc.name)}" style="display:inline-block;background:#ffffff;color:#374151;'
+		f'padding:11px 20px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;border:1px solid #D1D5DB;margin:0 0 8px 0">'
+		f"{_('Open {0}').format(doc.name)}</a>"
+	)
+	return f"""
+<div style="background:#F3F4F6;padding:24px 12px;font-family:Segoe UI,Arial,sans-serif">
+ <table role="presentation" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #E5E7EB">
+  <tr><td style="background:{colour};padding:22px 24px;color:#ffffff">
+   <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+    <td style="vertical-align:middle">
+     <div style="color:#ffffff;font-size:11px;letter-spacing:1.5px;font-weight:700;opacity:.85">{label}</div>
+     <div style="color:#ffffff;font-size:20px;font-weight:700;margin-top:6px;line-height:1.3">{esc(doc.product_name or "")}</div>
+     <div style="color:#ffffff;font-size:13px;opacity:.9;margin-top:2px">{esc(doc.customer_name or doc.customer or "")}</div>
+    </td>
+    <td style="vertical-align:middle;text-align:right;white-space:nowrap">
+     <div style="color:#ffffff;font-size:34px;font-weight:800;line-height:1">{big}</div>
+     <div style="color:#ffffff;font-size:11px;opacity:.85;margin-top:4px">{caption}</div>
+    </td>
+   </tr></table>
+  </td></tr>
+  <tr><td style="padding:20px 24px 4px 24px;color:#374151;font-size:14px;line-height:1.5">{intro}</td></tr>
+  <tr><td style="padding:4px 24px 12px 24px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">{cells}</table></td></tr>
+  <tr><td style="padding:8px 24px 16px 24px">{button}{open_btn}
+   <div style="color:#9CA3AF;font-size:12px;margin-top:6px">{_("Click once it is renewed / paid and these reminders stop.")}</div>
+  </td></tr>
+  <tr><td style="background:#F9FAFB;padding:12px 24px;color:#9CA3AF;font-size:11px;border-top:1px solid #EEF0F2">
+   {_("Renewal Management")} &middot; {esc(doc.name)}
+  </td></tr>
+ </table>
+</div>"""
