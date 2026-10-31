@@ -44,6 +44,27 @@ def has_app_permission():
 	return bool({"System Manager", *ROLES} & set(frappe.get_roles()))
 
 
+def open_for_everyone():
+	return frappe.db.get_single_value("Renewal Settings", "open_dashboard_for_everyone")
+
+
+def give_renewal_access(user, method=None):
+	"""With 'Open This Dashboard on Login for Everyone' on, a user without a Renewal role gets
+	Renewal User, so a new user with no roles is a System User and can open the dashboard."""
+	if user.name in ("Administrator", "Guest") or not open_for_everyone():
+		return
+	if not {"System Manager", *ROLES} & {row.role for row in user.roles}:
+		user.append("roles", {"role": "Renewal User"})
+
+
+def give_existing_users_access():
+	for name in frappe.get_all("User", filters={"enabled": 1, "name": ["not in", ["Administrator", "Guest"]]}, pluck="name"):
+		user = frappe.get_doc("User", name)
+		if not {"System Manager", *ROLES} & {row.role for row in user.roles}:
+			user.flags.ignore_permissions = True
+			user.save()  # give_renewal_access adds the role
+
+
 def get_home_page(user):
 	# Guests and website users keep Frappe's default home page.
 	if user != "Guest" and frappe.db.get_value("User", user, "user_type") == "System User" and has_app_permission():

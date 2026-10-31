@@ -175,13 +175,10 @@ get_website_user_home_page = "renewal_management.install.get_home_page"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	# before_validate: Frappe sets user_type from the roles in User.validate.
+	"User": {"before_validate": "renewal_management.install.give_renewal_access"},
+}
 
 # Scheduled Tasks
 # ---------------

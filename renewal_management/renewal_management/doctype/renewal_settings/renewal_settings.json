@@ -1,6 +1,6 @@
 {
  "actions": [],
- "creation": "2026-10-30 19:00:00.000000",
+ "creation": "2026-10-31 15:00:00.000000",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -12,7 +12,9 @@
   "default_remind_before_days",
   "default_follow_up_every",
   "cb1",
-  "default_hard_call_before_days"
+  "default_hard_call_before_days",
+  "sec_login",
+  "open_dashboard_for_everyone"
  ],
  "fields": [
   {
@@ -68,11 +70,23 @@
    "fieldtype": "Int",
    "label": "Hard Call Before (Days)",
    "default": "7"
+  },
+  {
+   "fieldname": "sec_login",
+   "fieldtype": "Section Break",
+   "label": "Login"
+  },
+  {
+   "fieldname": "open_dashboard_for_everyone",
+   "fieldtype": "Check",
+   "label": "Open This Dashboard on Login for Everyone",
+   "default": "0",
+   "description": "Every user lands on the Renewal Management dashboard after login. Users without a Renewal role get Renewal User, so nobody ends up as a Website User."
   }
  ],
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-10-30 19:00:00.000000",
+ "modified": "2026-10-31 15:00:00.000000",
  "modified_by": "Administrator",
  "module": "Renewal Management",
  "name": "Renewal Settings",
