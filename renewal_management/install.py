@@ -66,8 +66,13 @@ def give_existing_users_access():
 
 
 def get_home_page(user):
-	# Guests and website users keep Frappe's default home page.
-	if user != "Guest" and frappe.db.get_value("User", user, "user_type") == "System User" and has_app_permission():
+	# Only on sites that switched it on in Renewal Settings; guests and website users keep Frappe's default.
+	if (
+		user != "Guest"
+		and open_for_everyone()
+		and frappe.db.get_value("User", user, "user_type") == "System User"
+		and has_app_permission()
+	):
 		return "desk/renewal-management"
 
 
