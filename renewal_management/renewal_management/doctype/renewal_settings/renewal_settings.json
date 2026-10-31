@@ -1,6 +1,6 @@
 {
  "actions": [],
- "creation": "2026-10-31 16:00:00.000000",
+ "creation": "2026-10-31 17:00:00.000000",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -81,7 +81,7 @@
    "fieldname": "desk_access_for_everyone",
    "fieldtype": "Check",
    "label": "Give Desk Access to Every User",
-   "default": "0",
+   "default": "1",
    "description": "On login (and when a user is saved), a user with no Desk role, e.g. a Website User or one with only Customer, gets Renewal User and becomes a System User."
   },
   {
@@ -94,7 +94,7 @@
  ],
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-10-31 16:00:00.000000",
+ "modified": "2026-10-31 17:00:00.000000",
  "modified_by": "Administrator",
  "module": "Renewal Management",
  "name": "Renewal Settings",

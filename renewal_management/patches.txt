@@ -6,3 +6,4 @@
 # Patches added in this section will be executed after doctypes are migrated
 renewal_management.patches.number_customer_supplier_ids
 renewal_management.patches.merge_renewed_periods
+renewal_management.patches.enable_desk_access_for_everyone
