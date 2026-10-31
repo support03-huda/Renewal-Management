@@ -180,6 +180,8 @@ doc_events = {
 	"User": {"before_validate": "renewal_management.install.give_renewal_access"},
 }
 
+on_login = "renewal_management.install.give_desk_access_on_login"
+
 # Scheduled Tasks
 # ---------------
 

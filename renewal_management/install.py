@@ -44,32 +44,51 @@ def has_app_permission():
 	return bool({"System Manager", *ROLES} & set(frappe.get_roles()))
 
 
-def open_for_everyone():
-	return frappe.db.get_single_value("Renewal Settings", "open_dashboard_for_everyone")
+def setting(field):
+	return frappe.db.get_single_value("Renewal Settings", field)
+
+
+def has_desk_role(user):
+	roles = [row.role for row in user.roles]
+	return bool(roles) and bool(frappe.db.exists("Role", {"name": ["in", roles], "desk_access": 1}))
 
 
 def give_renewal_access(user, method=None):
-	"""With 'Open This Dashboard on Login for Everyone' on, a user without a Renewal role gets
-	Renewal User, so a new user with no roles is a System User and can open the dashboard."""
-	if user.name in ("Administrator", "Guest") or not open_for_everyone():
+	"""User before_validate: with 'Give Desk Access to Every User' on, a user with no Desk role
+	(a Website User, or one with only Customer) gets Renewal User, so Frappe makes it a System User."""
+	if user.name in ("Administrator", "Guest") or not setting("desk_access_for_everyone"):
 		return
-	if not {"System Manager", *ROLES} & {row.role for row in user.roles}:
+	if not has_desk_role(user):
 		user.append("roles", {"role": "Renewal User"})
+
+
+def give_desk_access_on_login(login_manager):
+	# on_login runs before Frappe reads the user type, so this login already gets the Desk.
+	if login_manager.user in ("Administrator", "Guest") or not setting("desk_access_for_everyone"):
+		return
+	try:
+		user = frappe.get_doc("User", login_manager.user)
+		if not has_desk_role(user):
+			user.flags.ignore_permissions = True
+			user.save()  # give_renewal_access adds the role
+	except Exception:
+		# Never block a login over this.
+		frappe.log_error(title=f"Renewal Management: could not give Desk access to {login_manager.user}")
 
 
 def give_existing_users_access():
 	for name in frappe.get_all("User", filters={"enabled": 1, "name": ["not in", ["Administrator", "Guest"]]}, pluck="name"):
 		user = frappe.get_doc("User", name)
-		if not {"System Manager", *ROLES} & {row.role for row in user.roles}:
+		if not has_desk_role(user):
 			user.flags.ignore_permissions = True
-			user.save()  # give_renewal_access adds the role
+			user.save()
 
 
 def get_home_page(user):
 	# Only on sites that switched it on in Renewal Settings; guests and website users keep Frappe's default.
 	if (
 		user != "Guest"
-		and open_for_everyone()
+		and setting("open_dashboard_on_login")
 		and frappe.db.get_value("User", user, "user_type") == "System User"
 		and has_app_permission()
 	):

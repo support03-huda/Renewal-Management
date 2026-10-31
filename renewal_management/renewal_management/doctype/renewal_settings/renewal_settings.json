@@ -1,6 +1,6 @@
 {
  "actions": [],
- "creation": "2026-10-31 15:00:00.000000",
+ "creation": "2026-10-31 16:00:00.000000",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -14,7 +14,8 @@
   "cb1",
   "default_hard_call_before_days",
   "sec_login",
-  "open_dashboard_for_everyone"
+  "desk_access_for_everyone",
+  "open_dashboard_on_login"
  ],
  "fields": [
   {
@@ -77,16 +78,23 @@
    "label": "Login"
   },
   {
-   "fieldname": "open_dashboard_for_everyone",
+   "fieldname": "desk_access_for_everyone",
    "fieldtype": "Check",
-   "label": "Open This Dashboard on Login for Everyone",
+   "label": "Give Desk Access to Every User",
    "default": "0",
-   "description": "Every user lands on the Renewal Management dashboard after login. Users without a Renewal role get Renewal User, so nobody ends up as a Website User."
+   "description": "On login (and when a user is saved), a user with no Desk role, e.g. a Website User or one with only Customer, gets Renewal User and becomes a System User."
+  },
+  {
+   "fieldname": "open_dashboard_on_login",
+   "fieldtype": "Check",
+   "label": "Open This Dashboard on Login",
+   "default": "0",
+   "description": "Users who can open Renewal Management land on this dashboard after login."
   }
  ],
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-10-31 15:00:00.000000",
+ "modified": "2026-10-31 16:00:00.000000",
  "modified_by": "Administrator",
  "module": "Renewal Management",
  "name": "Renewal Settings",
