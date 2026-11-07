@@ -8,6 +8,7 @@
   "send_emails",
   "sender_email",
   "notify_emails",
+  "email_customers",
   "sec_defaults",
   "default_remind_before_days",
   "default_follow_up_every",
@@ -40,9 +41,14 @@
   {
    "fieldname": "notify_emails",
    "fieldtype": "Small Text",
-   "label": "Send Reminders To",
-   "default": "support@softworld.co.in",
-   "description": "Every reminder goes to these emails. Comma separated."
+   "label": "Send Daily Summary To",
+   "default": "support@softworld.co.in"
+  },
+  {
+   "fieldname": "email_customers",
+   "fieldtype": "Check",
+   "label": "Send Reminders to Customers",
+   "default": "1"
   },
   {
    "fieldname": "sec_defaults",
@@ -94,7 +100,7 @@
  ],
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-10-31 17:00:00.000000",
+ "modified": "2026-11-07 11:30:00.000000",
  "modified_by": "Administrator",
  "module": "Renewal Management",
  "name": "Renewal Settings",

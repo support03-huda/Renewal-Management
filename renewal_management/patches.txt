@@ -7,3 +7,4 @@
 renewal_management.patches.number_customer_supplier_ids
 renewal_management.patches.merge_renewed_periods
 renewal_management.patches.enable_desk_access_for_everyone
+renewal_management.patches.enable_customer_reminders

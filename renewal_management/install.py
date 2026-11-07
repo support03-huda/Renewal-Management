@@ -45,7 +45,13 @@ def has_app_permission():
 
 
 def setting(field):
-	return frappe.db.get_single_value("Renewal Settings", field)
+	# Runs on every login: a site whose migrate is pending must still be able to log in.
+	try:
+		if not frappe.get_meta("Renewal Settings").has_field(field):
+			return None
+		return frappe.db.get_single_value("Renewal Settings", field)
+	except Exception:
+		return None
 
 
 def has_desk_role(user):
