@@ -235,10 +235,12 @@ def send_summary(events):
 		r for r in rows if (r.days_left or 0) >= 0 and r.hard_call_date and getdate(r.hard_call_date) <= today_
 	]
 	shown = {r.name for r in expired + call_now}
+	due_soon = sorted((r for r in rows if r.name not in shown), key=lambda r: r.days_left or 0, reverse=True)
+	# Green first, then yellow, then red.
 	groups = [
-		(_("Expired"), RED, expired),
-		(_("Call Now"), YELLOW, call_now),
-		(_("Due Soon"), GREEN, [r for r in rows if r.name not in shown]),
+		(_("Due Soon"), GREEN, due_soon),
+		(_("Call Now"), YELLOW, sorted(call_now, key=lambda r: r.days_left or 0, reverse=True)),
+		(_("Expired"), RED, sorted(expired, key=lambda r: r.days_left or 0, reverse=True)),
 	]
 
 	counts = ", ".join(f"{len(items)} {label.lower()}" for label, _colour, items in groups if items)

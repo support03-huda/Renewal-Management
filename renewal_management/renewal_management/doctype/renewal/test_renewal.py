@@ -186,13 +186,14 @@ class TestRenewalReminders(IntegrationTestCase):
 			reminders.daily()
 
 		message = self.summary()["message"]
+		# Green, then yellow, then red.
 		order = [
-			message.index("Expired ("),
-			message.index(expired.customer_name),
-			message.index("Call Now ("),
-			message.index(call_now.customer_name),
 			message.index("Due Soon ("),
 			message.index(due_soon.customer_name),
+			message.index("Call Now ("),
+			message.index(call_now.customer_name),
+			message.index("Expired ("),
+			message.index(expired.customer_name),
 		]
 		self.assertEqual(order, sorted(order))
 		self.assertNotIn(far.customer_name, message)
@@ -217,7 +218,7 @@ class TestRenewalReminders(IntegrationTestCase):
 		self.assertIn(doc.customer_name, message)
 
 	def test_empty_summary_text(self):
-		groups = [("Expired", reminders.RED, []), ("Call Now", reminders.YELLOW, []), ("Due Soon", reminders.GREEN, [])]
+		groups = [("Due Soon", reminders.GREEN, []), ("Call Now", reminders.YELLOW, []), ("Expired", reminders.RED, [])]
 		self.assertIn("Nothing is due", reminders.summary_body(groups, {}, getdate()))
 
 	def test_no_summary_without_team_emails(self):
